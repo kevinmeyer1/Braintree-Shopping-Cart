@@ -1,5 +1,7 @@
 # InClass03 Android App with API and Database
 
+This is a class project from Advanced Mobile Application Development - Graduate course. The goal of this project is to build ontop of a previous project that my group created. We had a functioning shopping application where users could signup, login, fill up a shopping cart, and then check out. The only thing we were missing was the actual logic behind checking out. In the update of that project, this GitHub repository, I implemented Braintree into our mobile app and server to simulate real transactions.
+
 This project includes the API and Android app needed to complete the requirements of InClass03.
 
 The API was create in Node.js and uses Express for the routing. The data is stored on an Amazon AWS MySQL database.
@@ -21,7 +23,20 @@ The payload of a JWT looks like this:
     {
         "username": "kevin"
     }
+    
+```/customer```:
 
+    https://inclass03.herokuapp.com/customer
+    
+The customer route is used when a user tries to check out. The user's JWT token is sent to the server as the only part of the request body. The server then connects with Braintree and tries to find matching account information. If that information exists, a token used specifically by Braintree is returned otherwise the server goes through the process of creating a new customer on Braintree's end. Once everything is good to go, the Braintree token is returned back to the mobile application so that specific customer information, like saved credit cards, can be grabbed from the Braintree client within the app.
+
+```/transaction```:
+
+    https://inclass03.herokuapp.com/transaction 
+    
+This route is used when a user finally checks out and confirms that they want to pay for their items. It takes in a PaymentMethodNonce, a Braintree object that sensitive information about the actual transaction, and it also needs a payment amount. Once the route has that information, it simply connects to the Braintree APIs and completes a transaction. All of the information is then viewable on the Braintree dashboard. 
+    
+    
 ```/signup```:
 
     https://inclass03.herokuapp.com/signup
